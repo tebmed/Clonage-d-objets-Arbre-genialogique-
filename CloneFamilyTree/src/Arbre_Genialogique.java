@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+import com.mxgraph.view.mxGraph;
 
 public class Arbre_Genialogique implements Cloneable{
 	
@@ -13,95 +17,144 @@ public class Arbre_Genialogique implements Cloneable{
 	//clone methode
 	public Object clone() throws CloneNotSupportedException
 	{
-		Arbre_Genialogique tmp = (Arbre_Genialogique) super.clone();	
+		Arbre_Genialogique tmp2 = (Arbre_Genialogique) super.clone();	
+		ArrayList<Arbre_Genialogique> ss = new ArrayList<>();
 		//deep copy
         try
         {
-			//tmp.enfants = (ArrayList<Arbre_Genialogique>) this.enfants.clone();
-        	ArrayList<Arbre_Genialogique> s = new ArrayList<>();
-			for (int i = 0; i < this.enfants.size(); i++) 
+        	for (int i = 0; i < this.enfants.size(); i++) 
         	{
 				Arbre_Genialogique t = this.enfants.get(i);
-				s.add((Arbre_Genialogique) t.clone());
+				ss.add((Arbre_Genialogique) t.clone());
 			}
-        	tmp.enfants = s;
+        	tmp2.enfants = ss;
 		} catch (Exception e) {
-			e.getStackTrace();
+			e.printStackTrace();
 		}
-		return tmp;
+		
+		return tmp2;
 	}
 		
 	//add node
 	public void ajouter_enfant(Arbre_Genialogique enfant)
 	{  
-		   this.enfants.add(enfant); 
+		  
+		 this.enfants.add(enfant); 
+		   
 	}
 	//search from dad
-	public Arbre_Genialogique trouver_pere(String prenom)
+	public  Arbre_Genialogique trouver_pere(String prenom)
 	{   
-		Arbre_Genialogique tmp= this;
+		
+		Arbre_Genialogique tmp1=this;
 		LinkedList<Arbre_Genialogique> q = new LinkedList<Arbre_Genialogique>();
-		q.addFirst(tmp);
+		q.addFirst(tmp1);
 		while(!(q.isEmpty())) 
 		{
            			  
-			  tmp = q.getLast();
-			  if(tmp.prenom.equals(prenom))
+			  tmp1 = q.getLast();
+			  if(tmp1.prenom.equals(prenom))
 			  {
 				  break; 
 			  }
 			  else
 			  {
-			  for (int i = 0; i < tmp.enfants.size(); i++) 
+			  for (int i = 0; i < tmp1.enfants.size(); i++) 
 			  {	
-				q.addFirst(tmp.enfants.get(i));
+				q.addFirst(tmp1.enfants.get(i));
 			  }
 			  
 			  q.removeLast();
 			  }
 			 
 		  }
-		 return tmp;
+		 return tmp1;
 		
 			}
 	
 	//display methode
-	public void  affichage()
+	public  mxGraph  dessiner_arbre(mxGraph graph,Object parent)
 	{
-		 
-		  Arbre_Genialogique tmp=this;
+		//dessier noeud 
+		  Arbre_Genialogique tmp3=this;
+		  ArrayList<String> list_nom= new ArrayList<>();
+		  ArrayList<Object> list_noeud=new ArrayList<>();
 		  LinkedList<Arbre_Genialogique> q = new LinkedList<Arbre_Genialogique>();
-		  q.addFirst(tmp);
+		  q.addFirst(tmp3);
+		 
+		  
+		 
 		  while(!(q.isEmpty())) 
 		  {
-             			  
-			  tmp = q.getLast();
-			  System.out.println("Nom : "+tmp.nom_de_famille+" , Prenom : "+tmp.prenom);  
-			  System.out.println(tmp);
+              tmp3 = q.getLast();
+			  if(!(list_nom.contains(tmp3.prenom)))
+			  {
+			  Object v1 = graph.insertVertex(parent, null,tmp3.nom_de_famille+" "+tmp3.prenom, tmp3.posx,tmp3.posy, 80, 30);
+			  if(!(list_nom.contains(tmp3.prenom))) list_nom.add(tmp3.prenom);
+			  if(!(list_noeud.contains(v1))) list_noeud.add(v1);
+			  }
+			 
 			  
-		   if(tmp.enfants.size() != 0)
+
+			  q.removeLast();
+		   if(tmp3.enfants.size() != 0)
 		   {
-			 System.out.println("Ses enfants :"); 
-             for (int i = 0; i < tmp.enfants.size(); i++) 
+			 
+			 for (int i = 0; i < tmp3.enfants.size(); i++) 
 			 {
-				 System.out.print(tmp.enfants.get(i).prenom+"   --  ");
-			 }
-		  
-			 System.out.println("   ");
-			 for (int i = 0; i < tmp.enfants.size(); i++) 
-			 {
-			   q.addFirst(tmp.enfants.get(i));
+			   q.addFirst(tmp3.enfants.get(i));
 			 }
 		   }
-			 q.removeLast();
+			 
 			 
 		  }
+	
+		  if(list_nom.size()>1)
+		  {
+			  
+		  //dessiner arc
+		  Arbre_Genialogique tmp1=this;
+	
+		  LinkedList<Arbre_Genialogique> q1= new LinkedList<Arbre_Genialogique>();
+		  q1.addFirst(tmp1);
+		  
+		  while(!(q1.isEmpty())) 
+		  {
+             			  
+			  tmp1 = q1.getLast();
+			  int index = 0;
+			  int index2=0;
+			
+			  for (int i4 = 0; i4 < list_nom.size(); i4++) {
+			   	 if(list_nom.get(i4).equals(tmp1.prenom))  index = i4;
+			  }
+			  if(tmp1.enfants.size() != 0)
+			  {
+				  for (int i6 = 0; i6 < tmp1.enfants.size(); i6++) 
+				  {
+					  String prn = tmp1.enfants.get(i6).prenom;
+					  for (int i8 = 0; i8 < list_nom.size(); i8++) {
+						   	 if(list_nom.get(i8).equals(prn))  index2 = i8;
+						  }
+					  q1.addFirst(tmp1.enfants.get(i6));
+					  graph.insertEdge(parent, null, i6,list_noeud.get(index), list_noeud.get(index2));
+				  }
+			  }
+			  
+			   q1.removeLast();
+			 
+		  }
+		  }
+		  
+		return graph;
 	}
 	
 	
+	
 	//attributs
-	private String nom_de_famille;
-	private String prenom;
-    private ArrayList<Arbre_Genialogique> enfants;
-
+	 String nom_de_famille;
+	 String prenom;
+     ArrayList<Arbre_Genialogique> enfants; 
+     int posx,posy;
+   
 }
