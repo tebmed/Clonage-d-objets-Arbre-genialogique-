@@ -1,38 +1,59 @@
+import java.util.Scanner;
+
 
 public class Test {
+	
+	public static  void menu()
+	{
+		System.out.println("1--ajouter un(e) person(n)e");
+		System.out.println("2--afficher l'arbre génialogique");
+		System.out.println("3--Cloner l'arbre Géniologique");
+	}
 
+	static Scanner s = new Scanner(System.in);
 	
 	public static void main(String[] args) throws CloneNotSupportedException 
 	{
-		 Arbre_Genialoqique a = new Arbre_Genialoqique("mohammed");
-		 Arbre_Genialoqique b = new Arbre_Genialoqique("ali"); 
-		 Arbre_Genialoqique c = new Arbre_Genialoqique("amin"); 
-	     Arbre_Genialoqique d = new Arbre_Genialoqique("nabil");
-		 	 		 
-	
-		 a.ajouter_enfant(b);
-		 a.ajouter_enfant(c);
-	     a.ajouter_enfant(d);
-		
-		 Arbre_Genialoqique b1 = new Arbre_Genialoqique("abdou");
-		 Arbre_Genialoqique b2 = new Arbre_Genialoqique("morched");
-		 Arbre_Genialoqique b3 = new Arbre_Genialoqique("khalil");
-	
-		 b.ajouter_enfant(b1);
-		 b1.ajouter_enfant(b2);
-		 b.ajouter_enfant(b3);
-		 
-		 Arbre_Genialoqique b31 = new Arbre_Genialoqique("ayoub");
-		 b3.ajouter_enfant(b31);
+		Arbre_Genialogique  a1 = null;
+		int ch =0;
+	 do{
+		menu(); 
+		System.out.println("entrer votre choix");
+	    ch = s.nextInt();
 	   
-	
-         a.affichage();	 
-         
-         Arbre_Genialoqique clo = (Arbre_Genialoqique) a.clone();
-         System.out.println("------------------------------- apres clonage--------------------------------");
-       
-         clo.affichage();
-          
+		switch (ch)
+		{
+		case 1:System.out.println("entrer son nom");
+		       String nom = s.next();
+		       System.out.println("prenom :");
+		       String prenom = s.next();
+		       Arbre_Genialogique  a = new Arbre_Genialogique(nom, prenom);
+		       if(a1 != null)
+		       {
+		       System.out.println("entrer le prenom de son pére");
+		       String pr = s.next();
+		       Arbre_Genialogique p = a1.trouver_pere(pr);
+		       p.ajouter_enfant(a);
+		       }
+		       else
+		       {
+		    	   a1=a;
+		       }
+			   break;
+			   
+		case 2:a1.affichage();
+		       break;
+		      
+		case 3:Arbre_Genialogique b = (Arbre_Genialogique)a1.clone();
+		       System.out.println("------------cloner----------------");
+			   b.affichage();
+		       System.out.println("------------origin----------------");
+               a1.affichage();
+			   
+			   break;
+			   
+		}
+	 }while(ch==1 || ch==2 || ch==3);
 		 
 	}
 }
